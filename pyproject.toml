@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=77", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "feaspump"
+dynamic = ["version"]
+description = "A Python library for the feasibility pump."
+readme.content-type = "text/markdown"
+readme.file = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Youssouf Emine", email = "youssouf.emine@polymtl.ca" },
+    { name = "Matteo Cacciola", email = "matteo.cacciola@polymtl.ca" },
+    { name = "Alexandre Forel", email = "alexandre.forel@polymtl.ca" }
+]
+maintainers = [
+    { name = "Youssouf Emine", email = "youssouf.emine@polymtl.ca" }
+]
+keywords = [
+    "Integer Programming",
+    "Operation Research",
+    "Differentiable Optimization"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+    "gurobipy",
+    "numpy",
+    "rich",
+    "torch",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage", 
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
+
+[project.urls]
+Homepage = "https://github.com/eminyous/pydfp"
+"Bug Tracker" = "https://github.com/eminyous/pydfp/issues"
