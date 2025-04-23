@@ -4,7 +4,7 @@ from typing import Protocol, final
 import torch
 
 
-class _X1mXMode(StrEnum):
+class X1mXMode(StrEnum):
     MIN = "min"
     PROD = "prod"
 
@@ -15,30 +15,30 @@ class _X1mXCtx(Protocol):
     def save_for_backward(self, *tensors: torch.Tensor) -> None: ...
 
 
-def _x1mx(x: torch.Tensor, *, mode: _X1mXMode) -> torch.Tensor:
-    if mode == _X1mXMode.MIN:
+def _x1mx(x: torch.Tensor, *, mode: X1mXMode) -> torch.Tensor:
+    if mode == X1mXMode.MIN:
         return torch.minimum(x, 1 - x)
     return x * (1 - x)
 
 
-def _dx1mx(x: torch.Tensor, *, mode: _X1mXMode) -> torch.Tensor:
+def _dx1mx(x: torch.Tensor, *, mode: X1mXMode) -> torch.Tensor:
     onehalf = 0.5
-    if mode == _X1mXMode.MIN:
+    if mode == X1mXMode.MIN:
         return torch.where(x > onehalf, -1.0, 1.0)
     return 1 - 2 * x
 
 
 class X1mX(torch.nn.Module):
-    mode: _X1mXMode
+    mode: X1mXMode
     fn: type[torch.autograd.Function]
 
     def __init__(
         self,
         *,
-        mode: _X1mXMode = _X1mXMode.MIN,
+        mode: X1mXMode = X1mXMode.MIN,
     ) -> None:
         super().__init__()
-        self.mode = _X1mXMode(mode)
+        self.mode = X1mXMode(mode)
         self.fn = self._init_fn()
 
     def _init_fn(self) -> type[torch.autograd.Function]:
