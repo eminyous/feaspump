@@ -1,3 +1,4 @@
+from .flip import FlipFn
 from .lp import LP, AutoLP, BaseDiffLP, BaseLP, PerturbedLP
 from .norm import Normalizer, NormMode, norm2
 from .round import BaseRound, PerturbedRound, Round
@@ -10,6 +11,7 @@ __all__ = [
     "BaseDiffLP",
     "BaseLP",
     "BaseRound",
+    "FlipFn",
     "NormMode",
     "Normalizer",
     "PerturbedLP",
