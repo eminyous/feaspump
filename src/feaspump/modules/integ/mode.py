@@ -2,16 +2,15 @@ from enum import StrEnum
 
 import torch
 
-from ...mip import MIP
 from .x1mx import X1mX
 
-type IntegerLossParam = float | int | torch.Tensor | MIP
+type IntegLossParam = float | int | torch.Tensor
 
 
 class IntegLossMode(StrEnum):
     X1MX = "x1mx"
 
-    def __call__(self, **params: IntegerLossParam) -> torch.nn.Module:
+    def __call__(self, **params: IntegLossParam) -> torch.nn.Module:
         match self:
             case IntegLossMode.X1MX:
                 return X1mX(**params)
