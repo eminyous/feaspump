@@ -12,8 +12,8 @@ from .core import (
 )
 from .modules import (
     FlipFn,
-    IntegerLossParam,
     IntegLossMode,
+    IntegLossParam,
     LPMode,
     Normalizer,
     NormMode,
@@ -53,7 +53,7 @@ class DiffPump(Pump):
 
     integ_mode: IntegLossMode = IntegLossMode.X1MX
     integ_reducer: Reducer = Reducer.SUM
-    integ_settings: Mapping[str, IntegerLossParam] = field(default_factory=dict)
+    integ_settings: Mapping[str, IntegLossParam] = field(default_factory=dict)
 
     reg: Regularization = Regularization.L2
 

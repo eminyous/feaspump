@@ -1,5 +1,5 @@
 from .flip import FlipFn
-from .integ import IntegerLossParam, IntegLossMode, X1mX, X1mXMode
+from .integ import IntegLossMode, IntegLossParam, X1mX, X1mXMode
 from .lp import LP, AutoLP, BaseDiffLP, BaseLP, LPMode, PerturbedLP
 from .norm import Normalizer, NormMode, norm2
 from .optim import OptimizerMode, OptimizerParam
@@ -16,7 +16,7 @@ __all__ = [
     "BaseRound",
     "FlipFn",
     "IntegLossMode",
-    "IntegerLossParam",
+    "IntegLossParam",
     "LPMode",
     "NormMode",
     "Normalizer",
