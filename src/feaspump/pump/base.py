@@ -3,16 +3,6 @@ from dataclasses import dataclass, field
 from time import time
 
 import torch
-from rich.console import Console, Group
-from rich.progress import (
-    BarColumn,
-    Live,
-    MofNCompleteColumn,
-    Progress,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-)
-from rich.text import Text
 
 from ..mip import MIP
 from ..modules import BaseLP, BaseRound, Slacks
@@ -25,7 +15,6 @@ from .syncable import Syncable
 
 @dataclass
 class CorePump(ABC, Notifier, Syncable):
-    verbose: bool = True
     max_iterations: int = 1000
 
     perturb_freq: int = 100
@@ -56,13 +45,7 @@ class CorePump(ABC, Notifier, Syncable):
 
     _integers: torch.Tensor = field(init=False)
 
-    _console: Console = field(init=False, repr=False)
-    _progress: Progress | None = field(init=False, default=None, repr=False)
-    _live: Live | None = field(init=False, default=None, repr=False)
-    _text: Text | None = field(init=False, default=None, repr=False)
-
     def __post_init__(self) -> None:
-        self._console = Console(quiet=not self.verbose, log_time=True)
         self.perturb_freq = min(self.perturb_freq, self.max_iterations)
 
     @property
@@ -116,37 +99,11 @@ class CorePump(ABC, Notifier, Syncable):
         self._status = Status.RUNNING
 
     def loop(self) -> None:
-        progress = Progress(
-            "[progress.description]{task.description}",
-            BarColumn(),
-            MofNCompleteColumn(),
-            TimeElapsedColumn(),
-            TimeRemainingColumn(compact=True),
-            console=self._console,
-            disable=not self.verbose,
-        )
-        text = Text(style="bold magenta")
-        self._progress = progress
-        self._text = text
-        with Live(
-            Group(self._text, self._progress),
-            console=self._console,
-            transient=True,
-        ) as live:
-            self._live = live
-
-            task = progress.add_task("Running...", total=self.max_iterations)
-
-            while not self.is_complete():
-                self.step()
-                self.save_step()
-                self.check_success()
-                self.iteration += 1
-                self._progress.update(task, advance=1)
-
-        self._live = None
-        self._progress = None
-        self._text = None
+        while not self.is_complete():
+            self.step()
+            self.save_step()
+            self.check_success()
+            self.iteration += 1
 
     def is_complete(self) -> bool:
         return not (
@@ -284,25 +241,7 @@ class CorePump(ABC, Notifier, Syncable):
             self.success()
 
     def success(self) -> None:
-        a = "an" if self._status == Status.INTEGRAL else "a"
-        msg = (
-            f"Feasibility Pump finished successfully at iteration "
-            f"{self.iteration}. It found {a} {self.status.lower()} solution"
-        )
-        self._log(msg)
         self.emit(Event.SUCCEEDED, status=self._status)
 
     def fail(self) -> None:
-        msg = f"Feasibility Pump failed after {self.max_iterations} iterations"
-        self._log(msg)
         self.emit(Event.FAILED, iteration=self.iteration)
-
-    def _log(self, msg: str) -> None:
-        if not self.verbose:
-            return
-
-        if self._live is not None and self._text is not None:
-            self._text.plain = msg
-            self._live.refresh()
-        else:
-            self._console.log(msg)

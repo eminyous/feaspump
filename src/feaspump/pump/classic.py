@@ -52,14 +52,6 @@ class FeasPump(CorePump):
             self.update_xp(self.x)
 
         objective = (self.mip.obj @ self.x).item()
-        if self._progress is not None:
-            desc = (
-                f"Objective: {objective:8.2f} "
-                f"Feasibility: {non_feasibility:6.2f} "
-                f"Integrality: {non_integrality:6.2f}"
-            )
-            task_id = next(iter(self._progress.task_ids))
-            self._progress.update(task_id, description=desc)
         self.emit(
             Event.ITERATION,
             iteration=self.iteration,
