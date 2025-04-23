@@ -6,19 +6,23 @@ import numpy as np
 import torch
 
 from ..modules import (
+    FlipFn,
     Normalizer,
     NormMode,
     PerturbedRound,
 )
+from ._utils import (
+    Event,
+    IntegerLossParam,
+    IntegLossMode,
+    LPMode,
+    OptimizerMode,
+    OptimizerParam,
+    Reducer,
+    Regularization,
+    Status,
+)
 from .base import CorePump
-from .event import Event
-from .flip import FlipFn
-from .integ import IntegerLossParam, IntegLossMode
-from .lp import LPMode
-from .optim import OptimizerMode, OptimizerParam
-from .reduce import Reducer
-from .reg import Regularization
-from .status import Status
 
 
 class InitMode(StrEnum):

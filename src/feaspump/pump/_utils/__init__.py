@@ -3,7 +3,7 @@ from .event import Event
 from .integ import IntegerLossParam, IntegLossMode
 from .lp import LPMode
 from .notifier import Notifier
-from .optim import OptimizerMode
+from .optim import OptimizerMode, OptimizerParam
 from .reduce import Reducer
 from .reg import Regularization
 from .status import Status
@@ -18,6 +18,7 @@ __all__ = [
     "LPMode",
     "Notifier",
     "OptimizerMode",
+    "OptimizerParam",
     "Reducer",
     "Regularization",
     "Status",
