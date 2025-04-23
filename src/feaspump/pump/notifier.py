@@ -1,7 +1,5 @@
 from dataclasses import dataclass, field
 
-from feaspump import logger
-
 from .callback import Callback, CallbackParam
 from .event import Event
 
@@ -28,6 +26,6 @@ class Notifier:
     ) -> None:
         try:
             callback(event, **params)
-        except Exception as e:  # noqa: BLE001
-            msg = f"Callback {callback} failed with event {event}: {e}"
-            logger.exception(msg)
+        except Exception as e:
+            msg = f"Callback {callback} raised an error on event {event}: {e}"
+            raise UserWarning(msg) from e
