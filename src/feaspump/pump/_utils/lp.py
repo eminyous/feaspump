@@ -1,7 +1,7 @@
 from enum import StrEnum
 
-from ..mip import MIP
-from ..modules import (
+from ...mip import MIP
+from ...modules import (
     AutoLP,
     BaseDiffLP,
     PerturbedLP,

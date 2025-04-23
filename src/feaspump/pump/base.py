@@ -6,11 +6,7 @@ import torch
 
 from ..mip import MIP
 from ..modules import BaseLP, BaseRound, Slacks
-from .callback import Callback
-from .event import Event
-from .notifier import Notifier
-from .status import Status
-from .syncable import Syncable
+from ._utils import Callback, Event, Notifier, Status, Syncable
 
 
 @dataclass

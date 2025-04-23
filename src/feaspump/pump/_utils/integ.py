@@ -2,9 +2,10 @@ from enum import StrEnum
 
 import torch
 
-from ..modules import X1mX
+from ...mip import MIP
+from ...modules import X1mX
 
-type IntegerLossParam = float | int | torch.Tensor
+type IntegerLossParam = float | int | torch.Tensor | MIP
 
 
 class IntegLossMode(StrEnum):
