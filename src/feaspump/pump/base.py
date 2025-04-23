@@ -148,8 +148,6 @@ class CorePump(ABC, Notifier, Syncable):
 
     def check_no_integers(self) -> None:
         if self.integers.numel() == 0:
-            msg = "No integer variables in the model."
-            self._log(msg)
             self._status = Status.FEASIBLE
             self.emit(Event.NO_INTEGERS)
 
@@ -167,9 +165,6 @@ class CorePump(ABC, Notifier, Syncable):
         history = self.xlp_history[-self.history_length :]
         cycling = any(torch.allclose(x, xp) for xp in history)
         self.emit(Event.LP_CYCLING_CHECK, cycling=cycling)
-        if cycling:
-            msg = f"LP cycling detected at iteration {self.iteration}"
-            self._log(msg)
         return cycling
 
     def check_cycling(self) -> bool:
@@ -179,9 +174,6 @@ class CorePump(ABC, Notifier, Syncable):
         xp = self.x_history[-1]
         cycling = torch.allclose(x[self.integers], xp[self.integers])
         self.emit(Event.CYCLING_CHECK, cycling=cycling)
-        if cycling:
-            msg = f"Solution cycling detected at iteration {self.iteration}"
-            self._log(msg)
         return cycling
 
     def update_xp(self, x: torch.Tensor) -> None:
@@ -192,12 +184,8 @@ class CorePump(ABC, Notifier, Syncable):
         if self.iteration == 0:
             self.xp = torch.clone(x)
         elif self.check_perturb():
-            msg = f"Perturbing at iteration {self.iteration}"
-            self._log(msg)
             self.xp = self.do_perturb(x)
         elif self.check_cycling():
-            msg = f"Flipping at iteration {self.iteration}"
-            self._log(msg)
             self.xp = self.do_flip(x)
         else:
             self.xp = torch.clone(x)
