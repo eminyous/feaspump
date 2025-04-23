@@ -14,15 +14,13 @@ license-files = ["LICENSE"]
 authors = [
     { name = "Youssouf Emine", email = "youssouf.emine@polymtl.ca" },
     { name = "Matteo Cacciola", email = "matteo.cacciola@polymtl.ca" },
-    { name = "Alexandre Forel", email = "alexandre.forel@polymtl.ca" }
+    { name = "Alexandre Forel", email = "alexandre.forel@polymtl.ca" },
 ]
-maintainers = [
-    { name = "Youssouf Emine", email = "youssouf.emine@polymtl.ca" }
-]
+maintainers = [{ name = "Youssouf Emine", email = "youssouf.emine@polymtl.ca" }]
 keywords = [
     "Integer Programming",
     "Operation Research",
-    "Differentiable Optimization"
+    "Differentiable Optimization",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -33,20 +31,10 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 
-dependencies = [
-    "gurobipy",
-    "numpy",
-    "rich",
-    "torch",
-]
+dependencies = ["gurobipy", "numpy", "torch"]
 
 [project.optional-dependencies]
-dev = [
-    "coverage", 
-    "pytest",
-    "pytest-cov",
-    "ruff",
-]
+dev = ["coverage", "pytest", "pytest-cov", "ruff"]
 
 [tool.setuptools]
 packages = { find = { where = ["src"] } }
