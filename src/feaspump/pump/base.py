@@ -96,6 +96,7 @@ class CorePump(ABC, Notifier, Syncable):
         self.post_loop()
 
     def pre_loop(self) -> None:
+        self.emit(Event.START, iterations=self.max_iterations)
         self._status = Status.RUNNING
 
     def loop(self) -> None:
@@ -128,7 +129,7 @@ class CorePump(ABC, Notifier, Syncable):
         if getattr(self, "xlp", None) is not None:
             self.xlp_history.append(torch.clone(self.xlp))
 
-    def setup(self) -> torch.Tensor:
+    def setup(self) -> None:
         self.emit(Event.SETUP)
 
     @abstractmethod
@@ -197,7 +198,13 @@ class CorePump(ABC, Notifier, Syncable):
         y = torch.clone(x)
         indices = self.integers[idx]
         y[indices] = self.flip(x[indices])
-        self.emit(Event.PERTURBED, x=x, y=y, indices=indices)
+        self.emit(
+            Event.PERTURBED,
+            iteration=self.iteration,
+            x=x,
+            y=y,
+            indices=indices,
+        )
         return y
 
     def do_flip(self, x: torch.Tensor) -> torch.Tensor:
@@ -212,7 +219,13 @@ class CorePump(ABC, Notifier, Syncable):
         y = torch.clone(x)
         indices = self.integers[idx]
         y[indices] = self.flip(x[indices])
-        self.emit(Event.FLIPPED, x=x, y=y, indices=indices)
+        self.emit(
+            Event.FLIPPED,
+            iteration=self.iteration,
+            x=x,
+            y=y,
+            indices=indices,
+        )
         return y
 
     @abstractmethod
