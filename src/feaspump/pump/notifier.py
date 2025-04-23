@@ -1,3 +1,4 @@
+import warnings
 from dataclasses import dataclass, field
 
 from .callback import Callback, CallbackParam
@@ -26,6 +27,6 @@ class Notifier:
     ) -> None:
         try:
             callback(event, **params)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             msg = f"Callback {callback} raised an error on event {event}: {e}"
-            raise UserWarning(msg) from e
+            warnings.warn(msg, UserWarning, stacklevel=2)
