@@ -35,6 +35,7 @@ dependencies = ["gurobipy", "numpy", "torch"]
 
 [project.optional-dependencies]
 dev = ["coverage", "pytest", "pytest-cov", "ruff"]
+cli = ["typer", "pyyaml"]
 
 [tool.setuptools]
 packages = { find = { where = ["src"] } }
@@ -46,3 +47,6 @@ local_scheme = "node-and-date"
 [project.urls]
 Homepage = "https://github.com/eminyous/pydfp"
 "Bug Tracker" = "https://github.com/eminyous/pydfp/issues"
+
+[project.scripts]
+feaspump = "feaspump.cli.main:app"
