@@ -3,7 +3,7 @@ from typing import Annotated
 
 import typer
 
-from feaspump import FeasPump, Pump
+from feaspump import DiffPump, FeasPump, Pump
 from feaspump.cli.export import Exporter
 from feaspump.cli.options import ExportMode, Options
 from feaspump.mip import MIP
@@ -65,6 +65,22 @@ def classic(
     max_iterations: Annotated[
         int, typer.Option(help="Maximum number of iterations")
     ] = 1000,
+    flip_temp: Annotated[
+        float, typer.Option(help="Temperature for flipping")
+    ] = 50.0,
+    flip_temp_low: Annotated[
+        float, typer.Option(help="Low temperature for flipping")
+    ] = 0.5,
+    flip_temp_up: Annotated[
+        float, typer.Option(help="High temperature for flipping")
+    ] = 1.5,
+    perturb_freq: Annotated[
+        int, typer.Option(help="Frequency of perturbation")
+    ] = 100,
+    perturb_rho: Annotated[
+        float, typer.Option(help="Rho for perturbation")
+    ] = -0.3,
+    history_length: Annotated[int, typer.Option(help="Length of history")] = 2,
     *,
     use_restarts: Annotated[
         bool, typer.Option(help="Use restarts in the algorithm")
@@ -76,23 +92,60 @@ def classic(
     pump = FeasPump(
         max_iterations=max_iterations,
         use_restarts=use_restarts,
+        flip_temp=flip_temp,
+        flip_temp_low=flip_temp_low,
+        flip_temp_up=flip_temp_up,
+        perturb_freq=perturb_freq,
+        perturb_rho=perturb_rho,
+        history_length=history_length,
     )
     exporter = Exporter(opts.export_path, opts.export_mode)
     run(mip, pump, opts, exporter)
+    mip.close()
+    opts.close()
 
 
 @app.command()
 def diff(
     ctx: typer.Context,
-    beta: Annotated[float, typer.Option(help="Beta for regularization")] = 0.1,
-    lr: Annotated[float, typer.Option(help="Learning rate")] = 1.0,
+    max_iterations: Annotated[
+        int, typer.Option(help="Maximum number of iterations")
+    ] = 1000,
+    flip_temp: Annotated[
+        float, typer.Option(help="Temperature for flipping")
+    ] = 50.0,
+    flip_temp_low: Annotated[
+        float, typer.Option(help="Low temperature for flipping")
+    ] = 0.5,
+    flip_temp_up: Annotated[
+        float, typer.Option(help="High temperature for flipping")
+    ] = 1.5,
+    perturb_freq: Annotated[
+        int, typer.Option(help="Frequency of perturbation")
+    ] = 100,
+    perturb_rho: Annotated[
+        float, typer.Option(help="Rho for perturbation")
+    ] = -0.3,
+    history_length: Annotated[int, typer.Option(help="Length of history")] = 2,
+    *,
+    use_restarts: Annotated[
+        bool, typer.Option(help="Use restarts in the algorithm")
+    ] = True,
 ) -> None:
     opts = ctx.ensure_object(Options)
     opts.validate()
-    typer.echo("🟣 Running differentiable feasibility pump")
-    typer.echo(f"Beta: {beta} — LR: {lr}")
-    typer.echo(f"Remote: {opts.remote}")
-    typer.echo(f"File: {opts.file}")
-    typer.echo(f"Instance: {opts.instance}")
-    typer.echo(f"GPU: {opts.gpu}")
-    typer.echo(f"Seeds: {opts.seeds}")
+    pump = DiffPump(
+        max_iterations=max_iterations,
+        use_restarts=use_restarts,
+        flip_temp=flip_temp,
+        flip_temp_low=flip_temp_low,
+        flip_temp_up=flip_temp_up,
+        perturb_freq=perturb_freq,
+        perturb_rho=perturb_rho,
+        history_length=history_length,
+    )
+    mip = opts.mip
+    exporter = Exporter(opts.export_path, opts.export_mode)
+    run(mip, pump, opts, exporter)
+    mip.close()
+    opts.close()

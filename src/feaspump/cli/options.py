@@ -18,6 +18,13 @@ class ExportMode(StrEnum):
     FULL = "full"
 
 
+def _init_env() -> gp.Env:
+    env = gp.Env(empty=True)
+    env.setParam("OutputFlag", 0)
+    env.start()
+    return env
+
+
 @dataclass
 class Options:
     remote: bool = False
@@ -27,9 +34,9 @@ class Options:
     seeds: list[int] = field(default_factory=list)
     n_trials: int | None = None
     export_mode: ExportMode = ExportMode.LIGHT
-    export_path: Path | None = None
+    export_path: Path = field(init=True)
 
-    _env: gp.Env = field(default_factory=gp.Env, init=False, repr=False)
+    _env: gp.Env = field(default_factory=_init_env, init=False, repr=False)
 
     def validate(self) -> None:
         if self.remote and self.file is not None:
@@ -62,11 +69,6 @@ class Options:
                 raise RuntimeError(msg)
             return torch.device("cuda")
         return torch.device("cpu")
-
-    def __post_init__(self) -> None:
-        env = self._env
-        env.setParam("OutputFlag", 0)
-        env.start()
 
     @property
     def mip(self) -> MIP:
