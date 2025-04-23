@@ -3,7 +3,7 @@ from enum import StrEnum
 import torch
 
 from ...mip import MIP
-from ...modules import X1mX
+from .x1mx import X1mX
 
 type IntegerLossParam = float | int | torch.Tensor | MIP
 

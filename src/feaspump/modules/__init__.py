@@ -1,9 +1,12 @@
 from .flip import FlipFn
-from .lp import LP, AutoLP, BaseDiffLP, BaseLP, PerturbedLP
+from .integ import IntegerLossParam, IntegLossMode, X1mX, X1mXMode
+from .lp import LP, AutoLP, BaseDiffLP, BaseLP, LPMode, PerturbedLP
 from .norm import Normalizer, NormMode, norm2
+from .optim import OptimizerMode, OptimizerParam
+from .reduce import Reducer
+from .reg import Regularization
 from .round import BaseRound, PerturbedRound, Round
 from .slacks import Slacks
-from .x1mx import X1mX, X1mXMode
 
 __all__ = [
     "LP",
@@ -12,10 +15,17 @@ __all__ = [
     "BaseLP",
     "BaseRound",
     "FlipFn",
+    "IntegLossMode",
+    "IntegerLossParam",
+    "LPMode",
     "NormMode",
     "Normalizer",
+    "OptimizerMode",
+    "OptimizerParam",
     "PerturbedLP",
     "PerturbedRound",
+    "Reducer",
+    "Regularization",
     "Round",
     "Slacks",
     "X1mX",

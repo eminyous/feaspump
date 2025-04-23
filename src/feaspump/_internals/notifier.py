@@ -1,8 +1,7 @@
 import warnings
 from dataclasses import dataclass, field
 
-from .callback import Callback, CallbackParam
-from .event import Event
+from ..core import Callback, CallbackParam, Event
 
 
 @dataclass

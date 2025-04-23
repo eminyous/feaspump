@@ -5,24 +5,24 @@ from enum import StrEnum
 import numpy as np
 import torch
 
-from ..modules import (
-    FlipFn,
-    Normalizer,
-    NormMode,
-    PerturbedRound,
-)
-from ._utils import (
+from .base import Pump
+from .core import (
     Event,
+    Status,
+)
+from .modules import (
+    FlipFn,
     IntegerLossParam,
     IntegLossMode,
     LPMode,
+    Normalizer,
+    NormMode,
     OptimizerMode,
     OptimizerParam,
+    PerturbedRound,
     Reducer,
     Regularization,
-    Status,
 )
-from .base import CorePump
 
 
 class InitMode(StrEnum):
@@ -34,20 +34,27 @@ class InitMode(StrEnum):
 
 
 @dataclass
-class DiffPump(CorePump):
-    r_eps: float = 0.15
-    r_dist: torch.distributions.Distribution | None = field(
+class DiffPump(Pump):
+    round_eps: float = 0.15
+    round_dist: torch.distributions.Distribution | None = field(
         default=None,
     )
+
     init_mode: InitMode = InitMode.OBJECTIVE
+
     norm_mode: NormMode = NormMode.II
+
     opt_mode: OptimizerMode = OptimizerMode.SGD
     opt_settings: Mapping[str, OptimizerParam] = field(default_factory=dict)
+
     lp_mode: LPMode = LPMode.AUTO
+
     slacks_reducer: Reducer = Reducer.MEAN
+
     integ_mode: IntegLossMode = IntegLossMode.X1MX
     integ_reducer: Reducer = Reducer.SUM
     integ_settings: Mapping[str, IntegerLossParam] = field(default_factory=dict)
+
     reg: Regularization = Regularization.L2
 
     w_reg: float = 0.5
@@ -70,12 +77,12 @@ class DiffPump(CorePump):
         self.integ_reducer = Reducer(self.integ_reducer)
         self.lp_mode = LPMode(self.lp_mode)
         self._integ = self.integ_mode(**self.integ_settings)
-        self._round = PerturbedRound(eps=self.r_eps, dist=self.r_dist)
+        self._round = PerturbedRound(eps=self.round_eps, dist=self.round_dist)
         self._normalizer = Normalizer(mode=self.norm_mode)
 
     def reset(self) -> None:
         super().reset()
-        self._lp = self.lp_mode(self.mip)
+        self._lp = self.lp_mode(self.mip.relax())
 
     def pre_loop(self) -> None:
         super().pre_loop()

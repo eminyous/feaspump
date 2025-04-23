@@ -4,13 +4,14 @@ from time import time
 
 import torch
 
-from ..mip import MIP
-from ..modules import BaseLP, BaseRound, Slacks
-from ._utils import Callback, Event, Notifier, Status, Syncable
+from ._internals import Notifier, Syncable
+from .core import Callback, Event, Status
+from .mip import MIP
+from .modules import BaseLP, BaseRound, Slacks
 
 
 @dataclass
-class CorePump(ABC, Notifier, Syncable):
+class Pump(ABC, Notifier, Syncable):
     max_iterations: int = 1000
 
     perturb_freq: int = 100

@@ -4,14 +4,13 @@ import gurobipy as gp
 import numpy as np
 import torch
 
-from ..modules import LP, Round
-from .base import CorePump
-from .event import Event
-from .status import Status
+from .base import Pump
+from .core import Event, Status
+from .modules import LP, Round
 
 
 @dataclass
-class FeasPump(CorePump):
+class FeasPump(Pump):
     _aux_variables: list[gp.Var] = field(init=False, default_factory=list)
     _aux_constrs: list[gp.Constr] = field(init=False, default_factory=list)
 
