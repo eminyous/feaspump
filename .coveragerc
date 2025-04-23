@@ -1,5 +1,5 @@
 [run]
-source = dfp
+source = src/feaspump
 omit = tests/*
 
 [report]
