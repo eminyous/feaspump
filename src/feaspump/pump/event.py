@@ -3,7 +3,8 @@ from enum import StrEnum
 
 class Event(StrEnum):
     RESET = "reset"
-    SETUP = "start"
+    SETUP = "setup"
+    START = "start"
     NO_INTEGERS = "no_integers"
     SUCCEEDED = "succeeded"
     FAILED = "failed"
